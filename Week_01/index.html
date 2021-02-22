@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe</title>
+  <style>
+    .cell {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      border: 1px solid #fff;
+      font-size: 50px;
+      line-height: 100px;
+      background-color: green;
+      text-align: center;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="board"></div>
+
+  <script>
+    const pattern = [
+      [0,0,0],
+      [0,0,0],
+      [0,0,0],
+    ];
+
+    let flag = 1;
+    let finished = false;
+
+    // 绘制棋盘
+    function render(pattern) {
+      let board = document.getElementsByClassName('board')[0];
+      board.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          let cell = document.createElement('div');
+          cell.classList.add('cell');
+          cell.innerText = pattern[i][j] == 1 ? '⭕' : 
+                           pattern[i][j] == 2 ? '❌' : '';
+          cell.addEventListener('click', () => {
+            move(i, j);
+          });
+          board.appendChild(cell);
+        }
+        board.appendChild(document.createElement('br'));
+      }
+    }
+
+    // 落子
+    function move(i, j) {
+      if(pattern[i][j] !== 0 || finished) return; 
+      pattern[i][j] = flag;
+      if(check()) {
+        finished = true;
+        alert(`${flag === 1 ? '⭕' : '❌'} is winner!`)
+      }
+      render(pattern);
+      flag = 3 - flag;
+    }
+
+    // 检查游戏结果
+    function check() {
+      for (let i = 0; i <3; i++) {
+        let result = true;
+        for (let j = 0; j < 3; j ++) {
+          if (pattern[i][j] !== flag) {
+            result = false;
+          }
+        }
+        if (result) {
+          return true;
+        }
+      }
+      for (let i = 0; i <3; i++) {
+        let result = true;
+        for (let j = 0; j < 3; j ++) {
+          if (pattern[j][i] !== flag) {
+            result = false;
+          }
+        }
+        if (result) {
+          return true;
+        }
+      }
+      {
+        let result = true;
+        for (let i = 0; i < 3; i++) {
+          if (pattern[i][i] !== flag) {
+            result = false;
+          }
+        }
+        if (result) return true; 
+      }
+      {
+        let result = true;
+        for (let i = 0; i < 3; i++) {
+          if (pattern[i][2-i] !== flag) {
+            result = false;
+          }
+        }
+        if (result) return true;
+      }
+      return false;
+    }
+
+    render(pattern);
+
+
+  </script>
+</body>
+</html>
