@@ -55,19 +55,22 @@
     function move(i, j) {
       if(pattern[i][j] !== 0 || finished) return; 
       pattern[i][j] = flag;
-      if(check()) {
+      if(check(pattern, flag)) {
         finished = true;
         alert(`${flag === 1 ? '⭕' : '❌'} is winner!`)
       }
       render(pattern);
       flag = 3 - flag;
+      if (willWin(pattern, flag)) {
+        console.log(`${flag === 1 ? '⭕' : '❌'} will win`);
+      }
     }
 
     // 检查游戏结果
-    function check() {
-      for (let i = 0; i <3; i++) {
+    function check(pattern, flag) {
+      for (let i = 0; i < 3; i++) {
         let result = true;
-        for (let j = 0; j < 3; j ++) {
+        for (let j = 0; j < 3; j++) {
           if (pattern[i][j] !== flag) {
             result = false;
           }
@@ -107,6 +110,40 @@
       }
       return false;
     }
+
+    // 深克隆
+    function deepClone(obj) {
+      if (!obj) return {};
+      const toString = Object.prototype.toString;
+      const result = toString.call(obj) === '[object Array]' ? [] : {};
+      for (let prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          if (typeof obj[prop] === 'object') {
+            result[prop] = deepClone(obj[prop]);
+          } else {
+            result[prop] = obj[prop]
+          }
+        }
+      }
+      return result;
+    }
+
+    // 判断下一个下棋者是否即将获胜
+    function willWin(pattern, flag) {
+      for (let i = 0; i <3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (pattern[i][j] === 0) {
+            let temp = deepClone(pattern);
+            temp[i][j] = flag;
+            if (check(temp, flag)) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
 
     render(pattern);
 
