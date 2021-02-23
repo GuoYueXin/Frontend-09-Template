@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>traffic lights</title>
+    <style>
+        .wrap {
+            width: 320px;
+            height: 100px;
+            line-height: 100px;
+            border: 1px solid #000;
+            border-radius: 10px;
+            padding-left: 20px;
+        }
+        .light-item {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            border-radius: 100%;
+            border: 1px solid #000;
+            vertical-align: middle;
+        }
+        .red {
+            background: red;
+        }
+        .yellow {
+            background: yellow;
+        }
+        .green {
+            background: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="light-item"></div>
+        <div class="light-item"></div>
+        <div class="light-item"></div>
+    </div>
+    <script>
+
+        // 休眠函数
+        function sleep(time) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, time * 1000)
+            })
+        }
+
+        // 信号灯轮询
+        async function loopTrafficeLight() {
+            changeLight('red');
+            await sleep(10);
+            changeLight('yellow');
+            await sleep(3);
+            changeLight('green');
+            await sleep(15);
+            loopTrafficeLight();
+        }
+
+        // 切换信号灯
+        function changeLight(color) {
+            const lightIndex = {
+                red: 0,
+                yellow: 1,
+                green: 2,
+            }
+            const trafficLight = document.getElementsByClassName('light-item');
+            for (let i = 0; i < 3; i++) {
+                trafficLight[i].classList = ['light-item'];
+                if (i === lightIndex[color]) {
+                    trafficLight[i].classList.add(color);
+                }
+            }
+            
+        }
+
+        loopTrafficeLight();
+
+    </script>
+</body>
+</html>
