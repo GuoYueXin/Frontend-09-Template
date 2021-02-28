@@ -23,10 +23,16 @@
   <div class="board"></div>
 
   <script>
+    // const pattern = [
+    //   [0,0,0],
+    //   [0,0,0],
+    //   [0,0,0],
+    // ];
+
     const pattern = [
-      [0,0,0],
-      [0,0,0],
-      [0,0,0],
+      0,0,0,
+      0,0,0,
+      0,0,0,
     ];
 
     let flag = 1;
@@ -40,8 +46,8 @@
         for (let j = 0; j < 3; j++) {
           let cell = document.createElement('div');
           cell.classList.add('cell');
-          cell.innerText = pattern[i][j] == 1 ? '⭕' : 
-                           pattern[i][j] == 2 ? '❌' : '';
+          cell.innerText = pattern[3 * i + j] == 1 ? '⭕' : 
+                           pattern[3 * i + j] == 2 ? '❌' : '';
           cell.addEventListener('click', () => {
             move(i, j);
           });
@@ -53,8 +59,8 @@
 
     // 落子
     function move(i, j) {
-      if(pattern[i][j] !== 0 || finished) return; 
-      pattern[i][j] = flag;
+      if(pattern[3 * i + j] !== 0 || finished) return; 
+      pattern[3 * i + j] = flag;
       if(check(pattern, flag)) {
         finished = true;
         alert(`${flag === 1 ? '⭕' : '❌'} is winner!`)
@@ -64,16 +70,14 @@
       if (willWin(pattern, flag)) {
         console.log(`${flag === 1 ? '⭕' : '❌'} will win`);
       }
-      setTimeout(() => {
-        computerMove();
-      }, 1000);
+      computerMove();
     }
 
     // 电脑落子
     function computerMove() {
       let choice = bastChoice(pattern, flag);
       if (choice.point) {
-        pattern[choice.point[0]][choice.point[1]] = flag;
+        pattern[3 * choice.point[0] + choice.point[1]] = flag;
       }
       if(check(pattern, flag)) {
         finished = true;
@@ -88,7 +92,7 @@
       for (let i = 0; i < 3; i++) {
         let result = true;
         for (let j = 0; j < 3; j++) {
-          if (pattern[i][j] !== flag) {
+          if (pattern[3 * i + j] !== flag) {
             result = false;
           }
         }
@@ -99,7 +103,7 @@
       for (let i = 0; i <3; i++) {
         let result = true;
         for (let j = 0; j < 3; j ++) {
-          if (pattern[j][i] !== flag) {
+          if (pattern[3 * j + i] !== flag) {
             result = false;
           }
         }
@@ -110,7 +114,7 @@
       {
         let result = true;
         for (let i = 0; i < 3; i++) {
-          if (pattern[i][i] !== flag) {
+          if (pattern[3 * i + i] !== flag) {
             result = false;
           }
         }
@@ -119,7 +123,7 @@
       {
         let result = true;
         for (let i = 0; i < 3; i++) {
-          if (pattern[i][2-i] !== flag) {
+          if (pattern[2 * i + 2] !== flag) {
             result = false;
           }
         }
@@ -149,9 +153,9 @@
     function willWin(pattern, flag) {
       for (let i = 0; i <3; i++) {
         for (let j = 0; j < 3; j++) {
-          if (pattern[i][j] === 0) {
+          if (pattern[3 * i + j] === 0) {
             let temp = deepClone(pattern);
-            temp[i][j] = flag;
+            temp[3 * i + j] = flag;
             if (check(temp, flag)) {
               return [i, j];
             }
@@ -173,17 +177,17 @@
       let point = null;
       counter:for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-          if (pattern[i][j]) {
+          if (pattern[3 * i + j]) {
             continue;
           }
           let temp = deepClone(pattern);
-          temp[i][j] = flag;
+          temp[3 * i + j] = flag;
           // 获取对方的最优选择：对方的最优选择即为我方的最差选择，即对方赢则代表我方输
           let r = bastChoice(temp, 3 - flag).result;
           // 如果我方有更优解，则进行替换
           if (-r > result) {
             result = -r;
-            point = [j, i];
+            point = [i, j];
           }
           // 如果我方将要胜利，则退出循环
           if (result == 1) {
