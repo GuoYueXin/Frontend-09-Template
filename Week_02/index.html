@@ -106,7 +106,6 @@
     });
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.getElementById('save-btn').addEventListener('click', () => {
-      const res = map.map(item => item === 2 ? 0 : item);
       localStorage.setItem('map', JSON.stringify(res));
     });
 
@@ -114,8 +113,9 @@
     async function findPath(map, start, end) {
 
       let queue = new Sorted([start], (a, b) => distance(a) - distance(b));
-      let table = Object.create(map);
+      let table = Object.create(map); // 用来保存每个点是由那个点搜索得到
 
+      // 计算当前点与终点之间的距离
       function distance(index) {
         return (end[0] - index[0]) ** 2 + (end[1] - index[1]) ** 2; 
       }
@@ -148,11 +148,13 @@
           return path;
         }
 
+        // 寻找上下左右四个点
         await insert(x - 1, y, [x, y]);
         await insert(x, y - 1, [x, y]);
         await insert(x, y + 1, [x, y]);
         await insert(x + 1, y, [x, y]);
 
+        // 寻找四个斜角的点
         await insert(x - 1, y - 1, [x, y]);
         await insert(x - 1, y + 1, [x, y]);
         await insert(x + 1, y - 1, [x, y]);
